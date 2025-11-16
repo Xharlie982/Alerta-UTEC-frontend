@@ -9,9 +9,9 @@ import { IncidentForm } from '../components/incidents/IncidentForm';
 import { IncidentTable } from '../components/incidents/IncidentTable';
 import { IncidentSummaryCards } from '../components/incidents/IncidentSummaryCards';
 import { IncidentDetailPanel } from '../components/incidents/IncidentDetailPanel';
+import { ChatPanel } from '../components/incidents/ChatPanel';
 import { Button } from '../components/common/Button';
 import { Loader } from '../components/common/Loader';
-import { CookieMonster } from '../components/common/CookieMonster';
 import { wsMock } from '../services/wsMock';
 import type { Incidente, WebSocketMessage } from '../types/incidentes';
 
@@ -25,6 +25,8 @@ export function UsuarioDashboard() {
     obtenerHistorial,
     agregarComentario,
     actualizarIncidente,
+    obtenerMensajes,
+    enviarMensaje,
   } = useIncidentes(token || '', {});
   const { showToast } = useToast();
   
@@ -201,8 +203,18 @@ export function UsuarioDashboard() {
         </div>
       </div>
 
-      {/* Summary Cards */}
-      <IncidentSummaryCards incidentes={incidentes} />
+        {/* Summary Cards */}
+        <IncidentSummaryCards incidentes={incidentes} />
+
+        {/* Chat Panel */}
+        {selectedIncident && (
+          <ChatPanel
+            incidente={selectedIncident}
+            obtenerMensajes={obtenerMensajes}
+            enviarMensaje={enviarMensaje}
+            currentUserEmail={user?.email || ''}
+          />
+        )}
 
       {/* Formulario de nuevo incidente */}
       {showForm && (
@@ -269,8 +281,6 @@ export function UsuarioDashboard() {
         />
       )}
 
-      {/* Comegalletas en la esquina inferior izquierda */}
-      <CookieMonster />
     </div>
   );
 }

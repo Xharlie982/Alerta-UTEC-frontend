@@ -15,7 +15,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
-  const { login, loginAs } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -34,7 +34,7 @@ export function LoginPage() {
 
       // Intentar iniciar sesión
       await login(email, password);
-      navigate('/usuario', { replace: true });
+      navigate('/inicio', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
     } finally {
@@ -162,31 +162,6 @@ export function LoginPage() {
             </button>
 
             {/* Botones de acceso rápido para demo */}
-            <div className="mt-6 pt-6 border-t border-slate-200">
-              <p className="text-xs text-slate-500 text-center mb-3">Accesos rápidos (demo)</p>
-              <div className="flex flex-col gap-2">
-                <button
-                  type="button"
-                  onClick={async () => {
-                    try {
-                      setLoading(true);
-                      setError(null);
-                      await loginAs('usuario');
-                      navigate('/usuario', { replace: true });
-                    } catch (err) {
-                      setError('Error al iniciar sesión');
-                    } finally {
-                      setLoading(false);
-                    }
-                  }}
-                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
-                  disabled={loading}
-                >
-                  Entrar como Estudiante
-                </button>
-              </div>
-            </div>
-
             <div className="mt-6 text-center">
               <p className="text-sm text-slate-600">
                 ¿No tienes una cuenta?{' '}

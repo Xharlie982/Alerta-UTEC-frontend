@@ -39,3 +39,12 @@ export interface WebSocketMessage {
   timestamp: number;
 }
 
+export interface ChatMessage {
+  id: string;
+  incidenteId: string;
+  enviadoPor: string;
+  mensaje: string;
+  timestamp: number;
+  leido: boolean;
+}
+

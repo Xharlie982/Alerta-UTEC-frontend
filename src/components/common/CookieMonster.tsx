@@ -2,8 +2,10 @@
 // Basado en el HTML proporcionado
 
 import { useEffect, useRef } from 'react';
+import { useSidebar } from '../../context/SidebarContext';
 
 export function CookieMonster() {
+  const { sidebarVisible } = useSidebar();
   const leftPupilRef = useRef<HTMLDivElement>(null);
   const rightPupilRef = useRef<HTMLDivElement>(null);
   const leftEyeballRef = useRef<HTMLDivElement>(null);
@@ -11,64 +13,18 @@ export function CookieMonster() {
   const starContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Crear estrellas en el fondo izquierdo completo
+    // Eliminar cualquier fondo azul o estrellas del sidebar
     const sidebar = document.querySelector('aside');
-    if (!sidebar) return;
-
-    // Crear contenedor de estrellas para toda la parte izquierda
-    let starsContainer = sidebar.querySelector('.cookie-stars-background') as HTMLElement;
-    if (!starsContainer) {
-      starsContainer = document.createElement('div');
-      starsContainer.className = 'cookie-stars-background';
-      starsContainer.style.cssText = `
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 0;
-        overflow: hidden;
-        background-color: #0062AD;
-      `;
-      sidebar.style.position = 'relative';
-      sidebar.style.backgroundColor = 'transparent'; // Hacer el sidebar transparente para que se vea el fondo azul
-      sidebar.appendChild(starsContainer);
-    }
-
-    const numberOfStars = 80; // Más estrellas para cubrir toda el área
-
-    // Limpiar estrellas existentes
-    starsContainer.innerHTML = '';
-
-    for (let i = 0; i < numberOfStars; i++) {
-      const star = document.createElement('div');
-      star.classList.add('cookie-star');
-      
-      const x = Math.random() * 100;
-      const y = Math.random() * 100;
-      star.style.left = `${x}%`;
-      star.style.top = `${y}%`;
-      
-      const size = Math.random() * 2 + 1;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      
-      const animationDuration = Math.random() * 3 + 1;
-      const animationDelay = Math.random() * 2;
-      star.style.animationDuration = `${animationDuration}s`;
-      star.style.animationDelay = `${animationDelay}s`;
-      
-      starsContainer.appendChild(star);
-    }
-
-    // No crear estrellas en el contenedor pequeño del comegalletas (solo fondo azul)
-    // Limpiar cualquier estrella existente en el contenedor del comegalletas
-    if (starContainerRef.current) {
-      const starContainer = starContainerRef.current;
-      // Eliminar todas las estrellas existentes
-      const existingStars = starContainer.querySelectorAll('.cookie-star');
-      existingStars.forEach(star => star.remove());
+    if (sidebar) {
+      // Asegurar que el sidebar tenga su color verde original
+      const existingStarsContainer = sidebar.querySelector('.cookie-stars-background');
+      if (existingStarsContainer) {
+        existingStarsContainer.remove();
+      }
+      // Restaurar el color de fondo verde del sidebar si fue modificado
+      if (sidebar instanceof HTMLElement) {
+        sidebar.style.backgroundColor = '';
+      }
     }
 
     // Función para mover las pupilas
@@ -128,9 +84,6 @@ export function CookieMonster() {
           z-index: 0;
         }
         
-        .cookie-stars-background .cookie-star {
-          z-index: 0;
-        }
         
         @keyframes twinkle {
           0% { opacity: 0; transform: scale(0.5); }
@@ -180,18 +133,20 @@ export function CookieMonster() {
           transition: transform 0.1s ease-out;
         }
       `}</style>
-      <div className="fixed bottom-4 left-4 z-30 w-48 h-32 pointer-events-none">
-        <div className="cookie-star-container" ref={starContainerRef}>
-          <div className="cookie-monster-eyes">
-            <div className="cookie-eye-ball left" ref={leftEyeballRef}>
-              <div className="cookie-pupil" ref={leftPupilRef}></div>
-            </div>
-            <div className="cookie-eye-ball right" ref={rightEyeballRef}>
-              <div className="cookie-pupil" ref={rightPupilRef}></div>
+      {sidebarVisible && (
+        <div className="fixed bottom-4 left-4 z-30 w-48 h-32 pointer-events-none transition-opacity duration-300">
+          <div className="cookie-star-container" ref={starContainerRef}>
+            <div className="cookie-monster-eyes">
+              <div className="cookie-eye-ball left" ref={leftEyeballRef}>
+                <div className="cookie-pupil" ref={leftPupilRef}></div>
+              </div>
+              <div className="cookie-eye-ball right" ref={rightEyeballRef}>
+                <div className="cookie-pupil" ref={rightPupilRef}></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

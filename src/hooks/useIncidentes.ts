@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { Incidente, IncidenteFilters, HistorialItem } from '../types/incidentes';
+import type { Incidente, IncidenteFilters, HistorialItem, ChatMessage } from '../types/incidentes';
 import { mockIncidentesIniciales, mockHistorialInicial } from '../mocks/incidentes';
 
 // Estado global en memoria (simula base de datos)
 let incidentesEnMemoria: Incidente[] = [...mockIncidentesIniciales];
 let historialEnMemoria: Record<string, HistorialItem[]> = { ...mockHistorialInicial };
+let mensajesEnMemoria: Record<string, ChatMessage[]> = {};
 
 // Función para simular delay de red
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -254,16 +255,76 @@ export function useIncidentes(token: string | null, filters: IncidenteFilters = 
     }
   };
 
-  return {
-    incidentes,
-    loading,
-    error,
-    cargarIncidentes,
-    crearIncidente,
-    asignarIncidente,
-    resolverIncidente,
-    obtenerHistorial,
-    agregarComentario,
-    actualizarIncidente,
-  };
-}
+    const obtenerMensajes = useCallback(async (incidenteId: string): Promise<ChatMessage[]> => {
+      await delay(200);
+      return mensajesEnMemoria[incidenteId] || [];
+    }, []);
+
+    const enviarMensaje = useCallback(async (incidenteId: string, mensaje: string): Promise<void> => {
+      if (!token) throw new Error('No hay token de autenticación');
+
+      await delay(300);
+
+      const userStr = localStorage.getItem('alerta_utec_user');
+      const user = userStr ? JSON.parse(userStr) : null;
+
+      const nuevoMensaje: ChatMessage = {
+        id: `msg_${Date.now()}`,
+        incidenteId,
+        enviadoPor: user?.email || 'usuario@utec.edu.pe',
+        mensaje,
+        timestamp: Math.floor(Date.now() / 1000),
+        leido: false,
+      };
+
+      if (!mensajesEnMemoria[incidenteId]) {
+        mensajesEnMemoria[incidenteId] = [];
+      }
+      mensajesEnMemoria[incidenteId].push(nuevoMensaje);
+
+      // Simular respuesta automática del trabajador después de 2-4 segundos
+      setTimeout(() => {
+        const incidente = incidentesEnMemoria.find(inc => inc.id === incidenteId);
+        if (incidente && incidente.atendidoPor) {
+          const respuestas = [
+            'Entendido, voy a revisar el incidente.',
+            'Gracias por la información, lo estoy atendiendo.',
+            'Perfecto, ya estoy trabajando en ello.',
+            'Recibido, te mantendré informado del progreso.',
+          ];
+          const respuestaAleatoria = respuestas[Math.floor(Math.random() * respuestas.length)];
+
+          const respuesta: ChatMessage = {
+            id: `msg_${Date.now()}_auto`,
+            incidenteId,
+            enviadoPor: incidente.atendidoPor,
+            mensaje: respuestaAleatoria,
+            timestamp: Math.floor(Date.now() / 1000),
+            leido: false,
+          };
+
+          if (!mensajesEnMemoria[incidenteId]) {
+            mensajesEnMemoria[incidenteId] = [];
+          }
+          mensajesEnMemoria[incidenteId].push(respuesta);
+        }
+      }, Math.random() * 2000 + 2000); // Entre 2 y 4 segundos
+
+      return Promise.resolve();
+    }, [token]);
+
+    return {
+      incidentes,
+      loading,
+      error,
+      cargarIncidentes,
+      crearIncidente,
+      asignarIncidente,
+      resolverIncidente,
+      obtenerHistorial,
+      agregarComentario,
+      actualizarIncidente,
+      obtenerMensajes,
+      enviarMensaje,
+    };
+  }

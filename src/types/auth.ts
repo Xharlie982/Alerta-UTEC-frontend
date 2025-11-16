@@ -4,6 +4,8 @@ export interface Usuario {
   email: string;
   rol: Rol;
   nombre: string;
+  apellido?: string;
+  codigo?: string;
 }
 
 export interface LoginResponse {
@@ -17,6 +19,7 @@ export interface AuthContextType {
   loginAs: (role: Rol) => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
+  updateUser: (user: Usuario) => void;
   isAuthenticated: boolean;
 }
 

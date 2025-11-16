@@ -17,7 +17,7 @@ export function RoleGuard({ children, allowedRoles }: RoleGuardProps) {
   if (!user || !allowedRoles.includes(user.rol)) {
     // Redirigir al dashboard según el rol del usuario
     const roleRoutes: Record<Rol, string> = {
-      usuario: '/usuario',
+      usuario: '/inicio',
       trabajador: '/trabajador',
       supervisor: '/supervisor',
     };

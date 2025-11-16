@@ -73,6 +73,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(STORAGE_KEY_USER);
   };
 
+  const updateUser = (updatedUser: Usuario) => {
+    setUser(updatedUser);
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(updatedUser));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -81,6 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         loginAs,
         login,
         logout,
+        updateUser,
         isAuthenticated: !!user && !!token,
       }}
     >

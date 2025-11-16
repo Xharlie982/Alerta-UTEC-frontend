@@ -47,7 +47,51 @@ export function convertToUsuario(registeredUser: RegisteredUser): Usuario {
   return {
     email: registeredUser.email,
     rol: 'usuario',
-    nombre: `${registeredUser.nombre} ${registeredUser.apellido}`,
+    nombre: registeredUser.nombre,
+    apellido: registeredUser.apellido,
+    codigo: registeredUser.codigo,
   };
+}
+
+export function updateRegisteredUser(
+  oldEmail: string,
+  updates: Partial<Omit<RegisteredUser, 'password'>> & { password?: string }
+): RegisteredUser | null {
+  const users = getRegisteredUsers();
+  const user = users[oldEmail];
+  
+  if (!user) return null;
+  
+  // Si el email cambió, necesitamos mover el usuario a la nueva clave
+  if (updates.email && updates.email !== oldEmail) {
+    // Verificar que el nuevo email no esté en uso
+    if (users[updates.email]) {
+      return null; // El nuevo email ya está en uso
+    }
+    
+    // Crear nuevo usuario con el email actualizado
+    const updatedUser: RegisteredUser = {
+      ...user,
+      ...updates,
+      email: updates.email,
+      password: updates.password || user.password,
+    };
+    
+    // Eliminar el usuario antiguo
+    delete users[oldEmail];
+    
+    // Agregar el usuario con el nuevo email
+    users[updates.email] = updatedUser;
+  } else {
+    // Solo actualizar los campos
+    users[oldEmail] = {
+      ...user,
+      ...updates,
+      password: updates.password || user.password,
+    };
+  }
+  
+  localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(users));
+  return users[updates.email || oldEmail] || null;
 }
 
