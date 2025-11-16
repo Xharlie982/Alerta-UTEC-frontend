@@ -1,0 +1,4 @@
+# Coloca aquí imágenes estáticas que se servirán desde la raíz
+# Ejemplo: /logo.svg, /hero-image.jpg, etc.
+# Acceso: <img src="/logo.svg" />
+
