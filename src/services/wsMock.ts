@@ -13,14 +13,12 @@ class WebSocketMock {
   private intervalId: number | null = null;
   private reconnectIntervalId: number | null = null;
   private incidentIds: string[] = [];
-  private lastUpdateTime: number = Date.now();
 
   connect(incidentIds: string[] = []) {
     if (this.isConnected) return;
 
     this.incidentIds = incidentIds;
     this.isConnected = true;
-    this.lastUpdateTime = Date.now();
     this.notifyConnectionChange(true);
 
     // Simular actualizaciones periódicas cada 8-15 segundos
@@ -89,11 +87,6 @@ class WebSocketMock {
     this.notifyMessage(message);
   }
 
-  private getRandomState(): 'pendiente' | 'en_atencion' | 'resuelto' {
-    const states: Array<'pendiente' | 'en_atencion' | 'resuelto'> = ['pendiente', 'en_atencion', 'resuelto'];
-    return states[Math.floor(Math.random() * states.length)];
-  }
-
   private notifyMessage(message: WebSocketMessage) {
     this.messageCallbacks.forEach(callback => {
       try {
@@ -118,7 +111,7 @@ class WebSocketMock {
   forceUpdate(incidentId: string, estado: 'pendiente' | 'en_atencion' | 'resuelto') {
     const message: WebSocketMessage = {
       tipo: 'actualizacion_incidente',
-      incidenteId,
+      incidenteId: incidentId,
       datos: {
         estado,
         actualizadoEn: Math.floor(Date.now() / 1000),
