@@ -8,7 +8,7 @@ import estadisticasImage from '../assets/estadisticas.png';
 import campanaImage from '../assets/campana.png';
 import checkImage from '../assets/check.png';
 import reporteImage from '../assets/reporte.png';
-import laptopImage from '../assets/laptop.png';
+import girlImage from '../assets/ggirl-Photoroom.png';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { INTRANET_URL } from '../config/constants';
 import { UserGuideModal } from '../components/common/UserGuideModal';
@@ -179,34 +179,41 @@ export function HomePage() {
             }`}
           >
             <div className="flex flex-col lg:flex-row items-start gap-8">
-              {/* Imagen de laptop */}
+              {/* Imagen de estudiante */}
               <div className="flex-[1.4] -ml-48 lg:-ml-96 mt-12 lg:mt-16">
                 <img 
-                  src={laptopImage} 
-                  alt="Sistema de gestión de incidentes" 
+                  src={girlImage} 
+                  alt="Estudiante UTEC" 
                   className="w-full h-auto rounded-lg scale-110"
                 />
               </div>
 
               {/* Párrafo informativo */}
               <div className="flex-1 pt-16 lg:pt-24">
-                <h3 className="text-2xl font-bold text-slate-900 mb-4">
-                  Tecnología al servicio de la comunidad
-                </h3>
-                <div className="space-y-4 text-slate-700 leading-relaxed">
-                  <p>
-                    AlertaUTEC es una plataforma diseñada específicamente para la comunidad universitaria, 
-                    permitiendo reportar y gestionar incidentes de manera eficiente y rápida.
-                  </p>
-                  <p>
-                    Nuestro sistema garantiza una respuesta ágil a cualquier problema que pueda surgir en 
-                    el campus, desde fallas en infraestructura hasta problemas de limpieza o seguridad.
-                  </p>
-                  <p>
-                    Con un seguimiento en tiempo real y notificaciones instantáneas, mantén siempre 
-                    informado sobre el estado de tus reportes y contribuye a mejorar el ambiente 
-                    universitario para todos.
-                  </p>
+                <div 
+                  className="rounded-full p-10 lg:p-16 text-center"
+                  style={{
+                    backgroundColor: 'rgba(74, 90, 64, 0.3)', // Verde semitransparente (#4a5a40 con 30% opacidad)
+                  }}
+                >
+                  <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                    Tecnología al servicio de la comunidad
+                  </h3>
+                  <div className="space-y-4 text-slate-700 leading-relaxed">
+                    <p>
+                      AlertaUTEC es una plataforma diseñada específicamente para la comunidad universitaria, 
+                      permitiendo reportar y gestionar incidentes de manera eficiente y rápida.
+                    </p>
+                    <p>
+                      Nuestro sistema garantiza una respuesta ágil a cualquier problema que pueda surgir en 
+                      el campus, desde fallas en infraestructura hasta problemas de limpieza o seguridad.
+                    </p>
+                    <p>
+                      Con un seguimiento en tiempo real y notificaciones instantáneas, mantén siempre 
+                      informado sobre el estado de tus reportes y contribuye a mejorar el ambiente 
+                      universitario para todos.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
